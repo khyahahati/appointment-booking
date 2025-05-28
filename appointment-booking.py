@@ -27,7 +27,21 @@ def create_appointment(user: User):
 #View an appointment
 @app.get("/appointments")
 def view_appointments():
-    return appointments    
+    return appointments 
+
+
+#Update an appointment
+@app.put("/appointments/{appointment_id}")
+def update_appointment(appointment_id: int, user: User):
+    for appt in appointments:
+        if appt["id"] == appointment_id:
+            appt["patient_name"] = user.patient_name
+            appt["doctor_name"] = user.doctor_name
+            appt["appointment_date"] = user.appointment_date
+            return {
+                "message" : f"The appointment for {user.patient_name} with {user.doctor_name} has now been updated to {user.appointment_date}"
+            }
+    raise HTTPException(status_code=404, detail="Appointment not found")
 
 #Cancel an appointment
 @app.delete("/appointments/{appointment_id}")
